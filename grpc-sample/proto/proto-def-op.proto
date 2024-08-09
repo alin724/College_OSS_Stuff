@@ -1,0 +1,17 @@
+syntax = "proto3";
+
+package Grpc_op;
+
+option go_package = "pb/protos_grpc_op";
+
+message Grpc_op_req {
+  int32 ReqVal = 1;
+}
+
+message Grpc_op_resp {
+  int32 RespVal = 1;
+}
+
+service Grpc_op {
+  rpc Grpc_op_RPC (Grpc_op_req) returns (Grpc_op_resp);
+}

@@ -1,0 +1,20 @@
+FROM golang:1.22.2
+
+WORKDIR /grpc-client-op
+COPY . .
+RUN apt update
+# install proto compiler + protobuf, grpc gen go
+RUN apt install -y protobuf-compiler
+RUN go install google.golang.org/protobuf/cmd/protoc-gen-go@latest
+RUN go install google.golang.org/grpc/cmd/protoc-gen-go-grpc@latest
+RUN protoc --proto_path=/grpc-client-op/proto /grpc-client-op/proto/*.proto --go_out=/grpc-client-op/client --go-grpc_out=/grpc-client-op/client
+WORKDIR /grpc-client-op/client
+
+ENV SET_IPADDR 192.168.47.1
+RUN go get -u google.golang.org/grpc
+RUN go mod download
+
+RUN go build -o grpc_client .
+EXPOSE 20002
+
+CMD ["/grpc-client-op/client/grpc_client"]
